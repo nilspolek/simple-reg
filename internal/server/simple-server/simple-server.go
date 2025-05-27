@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 
+	blobservice "github.com/nilspolek/simple/internal/blob-service"
 	"github.com/nilspolek/simple/internal/server"
 )
 
@@ -18,12 +19,12 @@ var (
 	ManifestDir = "./data/manifests"
 )
 
-func New(blobdir ...string) *server.Server {
+func New(blobService *blobservice.BlobService, blobdir ...string) *server.Server {
 	if len(blobdir) > 0 {
 		BlobDir = blobdir[0]
 	}
 	svr := server.NewServer()
-	setupRoutes(svr)
+	setupRoutes(svr, blobService)
 
 	// create blobdir if it doesn't exist
 	if _, err := os.Stat(BlobDir); os.IsNotExist(err) {
@@ -40,7 +41,7 @@ func New(blobdir ...string) *server.Server {
 	return svr
 }
 
-func setupRoutes(svr *server.Server) {
+func setupRoutes(svr *server.Server, blobService *blobservice.BlobService) {
 
 	svr.Router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		svr.GetLogger().Debug().Msg(fmt.Sprintf("method not found %s [%s]", r.Method, r.URL.Path))
@@ -52,17 +53,18 @@ func setupRoutes(svr *server.Server) {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 	})
 
+	r := NewRoutes(blobService)
 	prefix := fmt.Sprintf("/v%d", VERSION)
-	svr.WithHandlerFunc(prefix+"/", defaultEndpoint, "GET")
-	svr.WithHandlerFunc(prefix+"/{name:.+}/blobs/uploads/", handleStartUpload, http.MethodPost)
-	svr.WithHandlerFunc(prefix+"/{name:.+}/blobs/uploads/{id}", handleFinalizeUpload, http.MethodPut)
-	svr.WithHandlerFunc(prefix+"/{name:.+}/blobs/uploads/{id}", handlePatchBlob, http.MethodPatch)
-	svr.WithHandlerFunc(prefix+"/{name:.+}/blobs/{digest}", handleBlobHeaders, http.MethodHead)
+	svr.WithHandlerFunc(prefix+"/", r.defaultEndpoint, "GET")
+	svr.WithHandlerFunc(prefix+"/{name:.+}/blobs/uploads/", r.handleStartUpload, http.MethodPost)
+	svr.WithHandlerFunc(prefix+"/{name:.+}/blobs/uploads/{id}", r.handleFinalizeUpload, http.MethodPut)
+	svr.WithHandlerFunc(prefix+"/{name:.+}/blobs/uploads/{id}", r.handlePatchBlob, http.MethodPatch)
+	svr.WithHandlerFunc(prefix+"/{name:.+}/blobs/{digest}", r.handleBlobHeaders, http.MethodHead)
 
 	// blob
-	svr.WithHandlerFunc(prefix+"/{name:.+}/blobs/{digest}", handleGetBlob, http.MethodGet)
+	svr.WithHandlerFunc(prefix+"/{name:.+}/blobs/{digest}", r.handleGetBlob, http.MethodGet)
 
 	// manifest
-	svr.WithHandlerFunc(prefix+"/{name:.+}/manifests/{reference:.+}", handleGetManifest, http.MethodGet, http.MethodHead)
-	svr.WithHandlerFunc(prefix+"/{name:.+}/manifests/{reference:.+}", handlePutManifest, http.MethodPut)
+	svr.WithHandlerFunc(prefix+"/{name:.+}/manifests/{reference:.+}", r.handleGetManifest, http.MethodGet, http.MethodHead)
+	svr.WithHandlerFunc(prefix+"/{name:.+}/manifests/{reference:.+}", r.handlePutManifest, http.MethodPut)
 }

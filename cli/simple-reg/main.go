@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 
+	blobservice "github.com/nilspolek/simple/internal/blob-service"
 	simpleserver "github.com/nilspolek/simple/internal/server/simple-server"
 	"github.com/rs/zerolog"
 )
@@ -13,8 +14,10 @@ func main() {
 		Timestamp().
 		Logger()
 
+	bs := blobservice.New()
+
 	simpleserver.
-		New().
+		New(bs).
 		WithLogRequest().
 		WithPort(5000).
 		WithLogger(logger).
