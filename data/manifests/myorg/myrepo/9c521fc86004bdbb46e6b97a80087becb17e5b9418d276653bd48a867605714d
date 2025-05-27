@@ -1,0 +1,11 @@
+{
+	"schemaVersion": 2,
+	"config": {
+		"mediaType": "application/vnd.oci.image.config.v1+json",
+		"digest": "sha256:b0a7bab060153074f30d9b57106069f0497f9d0e8231fcde6669fbe5f757437a",
+		"size": 129,
+		"data": "ewoJImF1dGhvciI6ICJPWEI0UjBLQm9sT3ZWSExjIiwKCSJhcmNoaXRlY3R1cmUiOiAiYW1kNjQiLAoJIm9zIjogImxpbnV4IiwKCSJyb290ZnMiOiB7CgkJInR5cGUiOiAibGF5ZXJzIiwKCQkiZGlmZl9pZHMiOiBbXQoJfQp9",
+		"newUnspecifiedField": "aGVsbG8gd29ybGQ="
+	},
+	"layers": []
+}
