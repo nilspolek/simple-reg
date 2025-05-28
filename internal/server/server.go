@@ -66,6 +66,7 @@ func (s *Server) logRequestMiddleware(next http.Handler) http.Handler {
 			Int("status code", rw.statusCode).
 			Int("duration", int(duration.Milliseconds())).
 			Str("content", string(rw.content)).
+			Any("args", rw.Header()).
 			Msg("request")
 	})
 }
