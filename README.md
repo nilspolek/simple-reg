@@ -24,7 +24,7 @@ Simple Registry is a lightweight implementation of a Docker Registry API. It pro
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/simple-reg.git
+   git clone https://github.com/nilspolek/simple-reg.git
    cd simple-reg
    ```
 
