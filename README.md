@@ -43,6 +43,14 @@ Simple Registry is a lightweight implementation of a Docker Registry API. It pro
    * Use `-port` to set a custom port (default is `5000`)
    * Use `-verbose` to enable verbose (debug-level) logging
 
+### Install with Go
+
+To install the application using Go, run the following command:
+
+```bash
+go install github.com/nilspolek/simple-reg/cli/simple-reg@latest
+```
+
 ## API Endpoints
 
 ### Blob Endpoints
