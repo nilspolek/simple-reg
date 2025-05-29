@@ -53,7 +53,7 @@ func setupRoutes(svr *server.Server) {
 	})
 
 	prefix := fmt.Sprintf("/v%d", VERSION)
-	svr.WithHandlerFunc(prefix+"/", defaultEndpoint, "GET")
+	svr.WithHandlerFunc(prefix+"/", handleGetAllTags, "GET")
 	svr.WithHandlerFunc(prefix+"/{name:.+}/blobs/uploads/", handleStartUpload, http.MethodPost)
 	svr.WithHandlerFunc(prefix+"/{name:.+}/blobs/uploads/{id}", handleFinalizeUpload, http.MethodPut)
 	svr.WithHandlerFunc(prefix+"/{name:.+}/blobs/uploads/{id}", handlePatchBlob, http.MethodPatch)
@@ -63,6 +63,7 @@ func setupRoutes(svr *server.Server) {
 	// manifest
 	svr.WithHandlerFunc(prefix+"/{name:.+}/manifests/{reference:.+}", handleGetManifest, http.MethodGet, http.MethodHead)
 	svr.WithHandlerFunc(prefix+"/{name:.+}/manifests/{reference:.+}", handlePutManifest, http.MethodPut)
+	svr.WithHandlerFunc(prefix+"/{name:.+}/manifests/{reference:.+}", handleDeleteManifest, http.MethodDelete)
 
 	// tag
 	svr.WithHandlerFunc(prefix+"/tags/list", handleGetAllTags, http.MethodGet)

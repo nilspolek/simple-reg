@@ -30,6 +30,8 @@ func (svc *ManifestService) CreateManifest(data []byte, repo, ref string) (strin
 		return "", err
 	}
 
+	svc.tags[repo] = append(svc.tags[repo], ref)
+
 	file, err := os.Open(manifestPath)
 	if err != nil {
 		return "", err
@@ -60,6 +62,24 @@ func (svc *ManifestService) GetManifest(repo, ref string) ([]byte, string, error
 	}
 
 	return data, fmt.Sprintf("sha256:%x", hasher.Sum(nil)), nil
+}
+
+func (svc *ManifestService) DeleteManifest(repo, ref string) error {
+	ref = ensureNoShaPrefix(ref)
+	manifestPath := filepath.Join(ManifestDir, repo, ref)
+	if err := os.Remove(manifestPath); err != nil {
+		return err
+	}
+	tags := svc.tags[repo]
+
+	// remove tag from tags
+	for index, tag := range tags {
+		if tag == ref {
+			tags = append(tags[:index], tags[index+1:]...)
+			break
+		}
+	}
+	return nil
 }
 
 func ensureNoShaPrefix(digest string) string {
@@ -97,14 +117,15 @@ func loadTags() map[string][]string {
 	}
 
 	// get each directory in ManifestDir
+	folderNames := make([]string, 0)
 	for _, file := range files {
 		if file.IsDir() {
-			tags[file.Name()] = append(tags[file.Name()], file.Name())
+			folderNames = append(folderNames, file.Name())
 		}
 	}
 
 	// get each tag in each directory
-	for dir, tags := range tags {
+	for _, dir := range folderNames {
 		files, err := os.ReadDir(filepath.Join(ManifestDir, dir))
 		if err != nil {
 			continue
@@ -114,7 +135,7 @@ func loadTags() map[string][]string {
 				// tag is a sha
 				continue
 			}
-			tags = append(tags, file.Name())
+			tags[dir] = append(tags[dir], file.Name())
 		}
 	}
 

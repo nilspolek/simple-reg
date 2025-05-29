@@ -16,11 +16,6 @@ var (
 	manifestService = manifestservice.New()
 )
 
-func defaultEndpoint(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Welcome to Simple Server v%d!", VERSION)
-}
-
 func GetScheme(r *http.Request) string {
 	if r.TLS != nil {
 		return "https"
@@ -115,4 +110,17 @@ func handleGetTags(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+}
+
+func handleDeleteManifest(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	repo := vars["name"]
+	ref := vars["reference"]
+
+	if err := manifestService.DeleteManifest(repo, ref); err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }
