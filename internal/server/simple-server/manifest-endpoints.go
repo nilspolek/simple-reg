@@ -7,8 +7,8 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	blobservice "github.com/nilspolek/simple/internal/server/blob-service"
-	manifestservice "github.com/nilspolek/simple/internal/server/manifest-service"
+	blobservice "github.com/nilspolek/simple-reg/internal/server/blob-service"
+	manifestservice "github.com/nilspolek/simple-reg/internal/server/manifest-service"
 )
 
 var (

@@ -4,7 +4,7 @@ import (
 	"flag"
 	"os"
 
-	simpleserver "github.com/nilspolek/simple/internal/server/simple-server"
+	simpleserver "github.com/nilspolek/simple-reg/internal/server/simple-server"
 	"github.com/rs/zerolog"
 )
 

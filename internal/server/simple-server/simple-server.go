@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/nilspolek/simple/internal/server"
+	"github.com/nilspolek/simple-reg/internal/server"
 )
 
 const (

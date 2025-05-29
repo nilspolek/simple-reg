@@ -8,7 +8,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
-	"github.com/nilspolek/simple/internal/server"
+	"github.com/nilspolek/simple-reg/internal/server"
 )
 
 func handleStartUpload(w http.ResponseWriter, r *http.Request) {

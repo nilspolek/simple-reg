@@ -1,4 +1,4 @@
-module github.com/nilspolek/simple
+module github.com/nilspolek/simple-reg
 
 go 1.24.3
 
