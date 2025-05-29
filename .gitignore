@@ -1,2 +1,5 @@
 # data dir that the manifest-service uses for storing images
 data
+
+# binary files that are generated during development
+bin

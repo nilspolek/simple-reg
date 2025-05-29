@@ -27,11 +27,11 @@ Simple Registry is a lightweight implementation of a Docker Registry API. It pro
    ```
 2. Build the project:
    ```bash
-   go build ./...
+   go build -o bin/simple-reg cli/simple-reg/main.go
    ```
 3. Run the server:
    ```bash
-   ./simple-reg
+   ./bin/simple-reg
    ```
 
 ## API Endpoints
