@@ -60,7 +60,12 @@ func (s *Server) logRequestMiddleware(next http.Handler) http.Handler {
 		duration := time.Since(start)
 		fullURL := fmt.Sprintf("%s://%s%s", GetScheme(r), r.Host, r.RequestURI)
 
-		s.log.Debug().
+		level := s.log.Debug()
+		if rw.statusCode >= 500 {
+			level = s.log.Error()
+		}
+
+		level.
 			Str("url", fullURL).
 			Str("method", r.Method).
 			Int("status code", rw.statusCode).
@@ -116,6 +121,6 @@ func (s *Server) WithMiddleware(middleware func(http.Handler) http.Handler) *Ser
 }
 
 func (s *Server) ListenAndServe() {
-	s.log.Println("Server started on port", s.port)
-	s.log.Err(http.ListenAndServe(fmt.Sprintf(":%d", s.port), s.Router))
+	s.log.Print("Server started on port ", s.port)
+	s.log.Error().AnErr("startup", http.ListenAndServe(fmt.Sprintf(":%d", s.port), s.Router))
 }

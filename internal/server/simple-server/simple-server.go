@@ -57,12 +57,14 @@ func setupRoutes(svr *server.Server) {
 	svr.WithHandlerFunc(prefix+"/{name:.+}/blobs/uploads/", handleStartUpload, http.MethodPost)
 	svr.WithHandlerFunc(prefix+"/{name:.+}/blobs/uploads/{id}", handleFinalizeUpload, http.MethodPut)
 	svr.WithHandlerFunc(prefix+"/{name:.+}/blobs/uploads/{id}", handlePatchBlob, http.MethodPatch)
-	svr.WithHandlerFunc(prefix+"/{name:.+}/blobs/{digest}", handleBlobHeaders, http.MethodHead)
-
-	// blob
+	svr.WithHandlerFunc(prefix+"/{name:.+}/blobs/{digest}", handleBlobHeaders, http.MethodGet, http.MethodHead)
 	svr.WithHandlerFunc(prefix+"/{name:.+}/blobs/{digest}", handleGetBlob, http.MethodGet)
 
 	// manifest
 	svr.WithHandlerFunc(prefix+"/{name:.+}/manifests/{reference:.+}", handleGetManifest, http.MethodGet, http.MethodHead)
 	svr.WithHandlerFunc(prefix+"/{name:.+}/manifests/{reference:.+}", handlePutManifest, http.MethodPut)
+
+	// tag
+	svr.WithHandlerFunc(prefix+"/tags/list", handleGetAllTags, http.MethodGet)
+	svr.WithHandlerFunc(prefix+"/{name:.+}/tags/list", handleGetTags, http.MethodGet)
 }

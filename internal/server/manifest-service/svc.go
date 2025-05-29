@@ -13,7 +13,7 @@ import (
 var ManifestDir = "data/manifests"
 
 type ManifestService struct {
-	// Define fields here
+	tags map[string][]string
 }
 
 func New() *ManifestService {
@@ -67,4 +67,56 @@ func ensureNoShaPrefix(digest string) string {
 		return digest[len("sha256:"):]
 	}
 	return digest
+}
+
+func (svc *ManifestService) GetAllTags() map[string][]string {
+	if len(svc.tags) == 0 {
+		svc.tags = loadTags()
+	}
+
+	return svc.tags
+}
+
+func (svc *ManifestService) GetTags(repo string) []string {
+	if len(svc.tags) == 0 {
+		svc.tags = loadTags()
+	}
+
+	if _, ok := svc.tags[repo]; !ok {
+		svc.tags[repo] = []string{}
+	}
+
+	return svc.tags[repo]
+}
+
+func loadTags() map[string][]string {
+	tags := make(map[string][]string)
+	files, err := os.ReadDir(ManifestDir)
+	if err != nil {
+		return tags
+	}
+
+	// get each directory in ManifestDir
+	for _, file := range files {
+		if file.IsDir() {
+			tags[file.Name()] = append(tags[file.Name()], file.Name())
+		}
+	}
+
+	// get each tag in each directory
+	for dir, tags := range tags {
+		files, err := os.ReadDir(filepath.Join(ManifestDir, dir))
+		if err != nil {
+			continue
+		}
+		for _, file := range files {
+			if len(file.Name()) == 64 {
+				// tag is a sha
+				continue
+			}
+			tags = append(tags, file.Name())
+		}
+	}
+
+	return tags
 }
