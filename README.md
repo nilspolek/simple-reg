@@ -51,6 +51,12 @@ To install the application using Go, run the following command:
 go install github.com/nilspolek/simple-reg/cli/simple-reg@latest
 ```
 
+To run the application:
+
+```bash
+simple-reg -port 5000 -verbose
+```
+
 ## API Endpoints
 
 ### Blob Endpoints
